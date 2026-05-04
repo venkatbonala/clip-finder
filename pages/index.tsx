@@ -149,19 +149,19 @@ export default function Home() {
                   <div style={{ width: '28px', height: '28px', background: badgeColors[i] || '#6366f1', color: '#fff', borderRadius: '7px', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{clip.clipNumber}</div>
                   <div>
                     <div style={{ fontSize: '13px', fontWeight: 600, color: '#e5e7eb' }}>Clip {clip.clipNumber}</div>
-                    <div style={{ fontSize: '11px', color: '#444', marginTop: '1px' }}>Suggested timestamp: {clip.timestamp}</div>
+                    <div style={{ fontSize: '11px', color: '#777', marginTop: '1px' }}>Suggested timestamp: {clip.timestamp}</div>
                   </div>
                 </div>
 
                 <div style={{ padding: '18px' }}>
-                  <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: '#333', marginBottom: '8px' }}>Hook — stop the scroll</div>
+                  <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: '#666', marginBottom: '8px' }}>Hook — stop the scroll</div>
                   <div style={{ fontSize: '15px', fontWeight: 600, color: '#fff', lineHeight: 1.5, padding: '14px 16px', background: '#12103a', border: '1px solid #2d2b6b', borderRadius: '8px', marginBottom: '14px' }}>{clip.hook}</div>
 
-                  <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: '#333', marginBottom: '6px' }}>Why this works</div>
-                  <div style={{ fontSize: '13px', color: '#444', fontStyle: 'italic', paddingLeft: '12px', borderLeft: '2px solid #1f1f1f', marginBottom: '16px', lineHeight: 1.6 }}>{clip.whyItWorks}</div>
+                  <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: '#666', marginBottom: '6px' }}>Why this works</div>
+                  <div style={{ fontSize: '13px', color: '#888', fontStyle: 'italic', paddingLeft: '12px', borderLeft: '2px solid #1f1f1f', marginBottom: '16px', lineHeight: 1.6 }}>{clip.whyItWorks}</div>
 
-                  <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: '#333', marginBottom: '8px' }}>Full reel script — read on camera</div>
-                  <div style={{ background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: '8px', padding: '16px', fontSize: '13px', color: '#9ca3af', lineHeight: 1.8, whiteSpace: 'pre-wrap' as const, marginBottom: '12px', fontFamily: 'inherit' }}>{clip.reelScript}</div>
+                  <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '.1em', color: '#666', marginBottom: '8px' }}>Full reel script — read on camera</div>
+                  <div style={{ background: '#0a0a0a', border: '1px solid #1a1a1a', borderRadius: '8px', padding: '16px', fontSize: '13px', color: '#c4c4c4', lineHeight: 1.8, whiteSpace: 'pre-wrap' as const, marginBottom: '12px', fontFamily: 'inherit' }}>{clip.reelScript}</div>
 
                   <div style={{ display: 'flex', gap: '8px' }}>
                     {[['hook', clip.hook, 'Copy hook'], ['script', clip.reelScript, 'Copy full script']].map(([key, text, label]) => (
