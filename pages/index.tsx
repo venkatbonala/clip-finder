@@ -4,7 +4,7 @@ import Head from 'next/head';
 export default function Home() {
   const [content, setContent] = useState('');
   const [contentType, setContentType] = useState('transcript');
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState('');
@@ -14,140 +14,150 @@ export default function Home() {
     setLoading(true);
     setError('');
     setResults(null);
-
     try {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content, contentType }),
       });
-
       const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || 'Something went wrong.');
-      } else {
-        setResults(data);
-      }
-    } catch (err) {
+      if (!res.ok) setError(data.error || 'Something went wrong.');
+      else setResults(data);
+    } catch {
       setError('Network error. Make sure the server is running.');
     } finally {
       setLoading(false);
     }
   }
 
-  function copyText(text, key) {
+  function copyText(text: string, key: string) {
     navigator.clipboard.writeText(text);
     setCopied(key);
     setTimeout(() => setCopied(''), 2000);
   }
 
-  const s = {
-    wrap: { maxWidth: '700px', margin: '0 auto', padding: '40px 20px', fontFamily: 'system-ui, sans-serif' },
-    h1: { fontSize: '26px', fontWeight: '600', marginBottom: '6px', color: '#111' },
-    sub: { color: '#666', fontSize: '15px', marginBottom: '32px' },
-    toggleWrap: { display: 'flex', gap: '8px', marginBottom: '12px' },
-    toggleBtn: (active) => ({
-      padding: '7px 16px', borderRadius: '8px', border: '1px solid',
-      borderColor: active ? '#0070f3' : '#ddd',
-      background: active ? '#e8f0fe' : 'white',
-      color: active ? '#0040c1' : '#555',
-      fontWeight: active ? '500' : '400',
-      cursor: 'pointer', fontSize: '13px'
-    }),
-    label: { fontSize: '13px', color: '#555', marginBottom: '6px', display: 'block' },
-    textarea: { width: '100%', padding: '12px', fontSize: '14px', border: '1px solid #ddd', borderRadius: '8px', resize: 'vertical', fontFamily: 'inherit', lineHeight: '1.6' },
-    btn: (disabled) => ({ marginTop: '12px', padding: '12px 28px', background: disabled ? '#ccc' : '#0070f3', color: 'white', border: 'none', borderRadius: '8px', fontSize: '15px', cursor: disabled ? 'not-allowed' : 'pointer', fontWeight: '500' }),
-    errBox: { marginTop: '20px', padding: '12px 16px', background: '#fff0f0', border: '1px solid #fcc', borderRadius: '8px', color: '#c00', fontSize: '14px' },
-    clipCard: { border: '1px solid #e5e7eb', borderRadius: '12px', padding: '20px', marginBottom: '20px', background: 'white' },
-    clipNum: { fontSize: '12px', fontWeight: '600', color: '#0070f3', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' },
-    timestamp: { fontSize: '13px', color: '#888', marginBottom: '12px' },
-    sectionLabel: { fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.06em', color: '#999', marginBottom: '4px', marginTop: '14px' },
-    hookText: { fontSize: '16px', fontWeight: '500', color: '#111', lineHeight: '1.5', marginBottom: '4px' },
-    whyText: { fontSize: '13px', color: '#666', fontStyle: 'italic', marginBottom: '4px' },
-    scriptBox: { background: '#f8f9fa', border: '1px solid #eee', borderRadius: '8px', padding: '14px', fontSize: '14px', color: '#333', lineHeight: '1.75', whiteSpace: 'pre-wrap' },
-    copyBtn: (active) => ({ marginTop: '8px', padding: '5px 14px', fontSize: '12px', border: '1px solid #ddd', borderRadius: '6px', cursor: 'pointer', background: active ? '#f0fff4' : 'white', color: active ? '#27500A' : '#555' }),
-    resultHeader: { fontSize: '18px', fontWeight: '600', color: '#111', marginBottom: '4px' },
-    resultSub: { fontSize: '13px', color: '#888', marginBottom: '20px' },
-  };
-
   return (
     <>
       <Head>
-        <title>Clip Finder — Turn long videos into viral short clips</title>
-        <meta name="description" content="Paste any transcript or text. Get the 3 best clip moments with hooks and full reel scripts." />
+        <title>Clip Finder — Turn any video into viral short clips</title>
+        <meta name="description" content="Paste a YouTube transcript. Get the 3 best clip moments with hooks and full reel scripts in 10 seconds." />
+        <style>{`
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body { font-family: system-ui, -apple-system, sans-serif; background: #f9fafb; color: #111; }
+          textarea:focus { outline: none; border-color: #2563eb !important; background: #fff !important; }
+          button:hover { opacity: 0.85; }
+        `}</style>
       </Head>
 
-      <main style={s.wrap}>
-        <h1 style={s.h1}>Clip Finder</h1>
-        <p style={s.sub}>Paste a YouTube transcript or any long content. Get the 3 best moments to turn into short clips — with hooks and full reel scripts.</p>
+      <nav style={{ background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '0 24px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ fontSize: '17px', fontWeight: 700, color: '#111', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ width: '28px', height: '28px', background: '#111', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="white"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6L8 1Z"/></svg>
+          </div>
+          Clip Finder
+        </div>
+        <div style={{ fontSize: '11px', fontWeight: 500, padding: '3px 10px', borderRadius: '20px', background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0' }}>Free tool</div>
+      </nav>
 
-        <form onSubmit={handleSubmit}>
-          <div style={s.toggleWrap}>
-            <button type="button" style={s.toggleBtn(contentType === 'transcript')} onClick={() => setContentType('transcript')}>
-              YouTube transcript
-            </button>
-            <button type="button" style={s.toggleBtn(contentType === 'general')} onClick={() => setContentType('general')}>
-              Blog / podcast / other text
-            </button>
+      <div style={{ padding: '48px 24px 24px', maxWidth: '680px', margin: '0 auto', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '32px', fontWeight: 700, color: '#111', lineHeight: 1.25, marginBottom: '12px', letterSpacing: '-0.5px' }}>
+          Turn any video into <span style={{ color: '#2563eb' }}>viral short clips</span>
+        </h1>
+        <p style={{ fontSize: '16px', color: '#6b7280', lineHeight: 1.6, maxWidth: '460px', margin: '0 auto 28px' }}>
+          Paste a YouTube transcript or any long content. Get the 3 best moments with hooks and full reel scripts — in 10 seconds.
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', marginBottom: '32px' }}>
+          {[['3', 'Best clips found'], ['10s', 'Average time'], ['100%', 'Free to use']].map(([num, label]) => (
+            <div key={label} style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '20px', fontWeight: 700, color: '#111' }}>{num}</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '2px' }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ maxWidth: '680px', margin: '0 auto', padding: '0 24px 60px' }}>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px', marginBottom: '16px' }}>
+          {[['1', 'Paste content', 'Transcript, blog, or any text'], ['2', 'AI analyses it', 'Finds your 3 best moments'], ['3', 'Copy and post', 'Hook + reel script ready']].map(([n, t, d]) => (
+            <div key={n} style={{ background: '#fff', border: '1px solid #f3f4f6', borderRadius: '10px', padding: '14px', textAlign: 'center' }}>
+              <div style={{ width: '24px', height: '24px', background: '#111', color: '#fff', borderRadius: '50%', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>{n}</div>
+              <div style={{ fontSize: '12px', fontWeight: 600, color: '#111', marginBottom: '3px' }}>{t}</div>
+              <div style={{ fontSize: '11px', color: '#9ca3af', lineHeight: 1.5 }}>{d}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '14px', padding: '24px', marginBottom: '16px' }}>
+          <div style={{ fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '10px' }}>Content type</div>
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+            {['transcript', 'general'].map(type => (
+              <button key={type} onClick={() => setContentType(type)} style={{ padding: '8px 16px', borderRadius: '8px', border: `1.5px solid ${contentType === type ? '#2563eb' : '#e5e7eb'}`, fontSize: '13px', fontWeight: 500, cursor: 'pointer', background: contentType === type ? '#eff6ff' : '#fff', color: contentType === type ? '#1d4ed8' : '#6b7280' }}>
+                {type === 'transcript' ? 'YouTube transcript' : 'Blog / podcast / other'}
+              </button>
+            ))}
           </div>
 
-          <label style={s.label}>
-            {contentType === 'transcript'
-              ? 'Paste your YouTube transcript below (open any YouTube video → click "..." → "Show transcript" → copy all text)'
-              : 'Paste your blog post, podcast notes, or any long-form content below'}
-          </label>
-
+          <div style={{ fontSize: '13px', fontWeight: 500, color: '#374151', marginBottom: '6px' }}>
+            {contentType === 'transcript' ? 'Paste your YouTube transcript' : 'Paste your long-form content'}
+          </div>
           <textarea
             value={content}
             onChange={e => setContent(e.target.value)}
-            placeholder={contentType === 'transcript'
-              ? "Paste the full YouTube transcript here..."
-              : "Paste your blog post, article, podcast notes, or any long content here..."}
-            rows={9}
-            style={s.textarea}
+            rows={8}
+            placeholder={contentType === 'transcript' ? 'Open any YouTube video → click (...) → Show transcript → copy all text and paste here...' : 'Paste your blog post, podcast notes, or any long content here...'}
+            style={{ width: '100%', padding: '14px', fontSize: '14px', border: '1.5px solid #e5e7eb', borderRadius: '10px', resize: 'vertical', fontFamily: 'inherit', lineHeight: 1.65, color: '#111', background: '#fafafa', minHeight: '160px' }}
           />
-
-          <div style={{ marginTop: '8px', fontSize: '12px', color: content.length < 100 ? '#e57' : '#999' }}>
-            {content.length} characters {content.length < 100 ? `— need at least ${100 - content.length} more` : '— ready'}
+          <div style={{ fontSize: '12px', marginTop: '6px', marginBottom: '16px', color: content.length < 100 ? '#ef4444' : '#16a34a' }}>
+            {content.length} characters {content.length < 100 ? `— need ${100 - content.length} more to continue` : '— ready to go'}
           </div>
 
-          <button type="submit" disabled={loading || content.length < 100} style={s.btn(loading || content.length < 100)}>
+          <button onClick={handleSubmit} disabled={loading || content.length < 100} style={{ width: '100%', padding: '14px', background: loading || content.length < 100 ? '#d1d5db' : '#111', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: 600, cursor: loading || content.length < 100 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             {loading ? 'Finding best clips...' : 'Find my best clips'}
           </button>
-        </form>
+        </div>
 
-        {error && <div style={s.errBox}>{error}</div>}
+        {error && <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '10px', padding: '14px 16px', fontSize: '14px', color: '#dc2626', marginBottom: '16px' }}>{error}</div>}
 
         {results && (
-          <div style={{ marginTop: '40px' }}>
-            <p style={s.resultHeader}>Your 3 best clip moments</p>
-            <p style={s.resultSub}>Copy the hook and script for each clip. Use them in CapCut, Instagram Reels, or TikTok.</p>
+          <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '14px', padding: '24px' }}>
+            <div style={{ marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid #f3f4f6' }}>
+              <div style={{ fontSize: '17px', fontWeight: 700, color: '#111' }}>Your 3 best clip moments</div>
+              <div style={{ fontSize: '13px', color: '#9ca3af', marginTop: '3px' }}>Copy the hook and script — paste into CapCut or record on camera</div>
+            </div>
 
-            {results.clips.map((clip, i) => (
-              <div key={i} style={s.clipCard}>
-                <div style={s.clipNum}>Clip {clip.clipNumber}</div>
-                <div style={s.timestamp}>Suggested timestamp: {clip.timestamp}</div>
+            {results.clips.map((clip: any, i: number) => (
+              <div key={i} style={{ border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden', marginBottom: '14px' }}>
+                <div style={{ padding: '14px 16px', background: '#f9fafb', borderBottom: '1px solid #f3f4f6', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ width: '26px', height: '26px', background: '#111', color: '#fff', borderRadius: '6px', fontSize: '11px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{clip.clipNumber}</div>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 600, color: '#111' }}>Clip {clip.clipNumber}</div>
+                    <div style={{ fontSize: '11px', color: '#9ca3af', marginTop: '1px' }}>Suggested timestamp: {clip.timestamp}</div>
+                  </div>
+                </div>
+                <div style={{ padding: '16px' }}>
+                  <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em', color: '#9ca3af', marginBottom: '6px' }}>Hook — first line of your reel</div>
+                  <div style={{ fontSize: '15px', fontWeight: 600, color: '#111', lineHeight: 1.5, marginBottom: '12px', padding: '12px', background: '#fffbeb', border: '1px solid #fef3c7', borderRadius: '8px' }}>{clip.hook}</div>
 
-                <div style={s.sectionLabel}>Hook — first line of your reel</div>
-                <div style={s.hookText}>{clip.hook}</div>
-                <button style={s.copyBtn(copied === `hook-${i}`)} onClick={() => copyText(clip.hook, `hook-${i}`)}>
-                  {copied === `hook-${i}` ? 'Copied!' : 'Copy hook'}
-                </button>
+                  <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em', color: '#9ca3af', marginBottom: '6px' }}>Why this works</div>
+                  <div style={{ fontSize: '13px', color: '#6b7280', marginBottom: '14px', fontStyle: 'italic', paddingLeft: '10px', borderLeft: '2px solid #e5e7eb' }}>{clip.whyItWorks}</div>
 
-                <div style={s.sectionLabel}>Why this clip works</div>
-                <div style={s.whyText}>{clip.whyItWorks}</div>
+                  <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em', color: '#9ca3af', marginBottom: '6px' }}>Full reel script — read this on camera</div>
+                  <div style={{ background: '#f9fafb', border: '1px solid #f3f4f6', borderRadius: '8px', padding: '14px', fontSize: '13px', color: '#374151', lineHeight: 1.75, whiteSpace: 'pre-wrap', marginBottom: '10px' }}>{clip.reelScript}</div>
 
-                <div style={s.sectionLabel}>Full reel script — read this on camera</div>
-                <div style={s.scriptBox}>{clip.reelScript}</div>
-                <button style={s.copyBtn(copied === `script-${i}`)} onClick={() => copyText(clip.reelScript, `script-${i}`)}>
-                  {copied === `script-${i}` ? 'Copied!' : 'Copy full script'}
-                </button>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    {[['hook', clip.hook, 'Copy hook'], ['script', clip.reelScript, 'Copy full script']].map(([key, text, label]) => (
+                      <button key={key} onClick={() => copyText(text as string, `${key}-${i}`)} style={{ padding: '7px 14px', fontSize: '12px', fontWeight: 500, border: '1px solid', borderColor: copied === `${key}-${i}` ? '#bbf7d0' : '#e5e7eb', borderRadius: '7px', cursor: 'pointer', background: copied === `${key}-${i}` ? '#f0fdf4' : '#fff', color: copied === `${key}-${i}` ? '#166534' : '#374151' }}>
+                        {copied === `${key}-${i}` ? 'Copied!' : label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         )}
-      </main>
+      </div>
     </>
   );
 }
