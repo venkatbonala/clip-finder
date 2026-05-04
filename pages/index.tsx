@@ -9,7 +9,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState('');
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
     setLoading(true);
     setError('');
