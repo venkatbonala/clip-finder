@@ -9,8 +9,8 @@ export default async function handler(req, res) {
 
   const { mode, content, idea, tone, platform } = req.body;
 
-  try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  try {const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+    ;
     let prompt = '';
 
     if (mode === 'idea') {
