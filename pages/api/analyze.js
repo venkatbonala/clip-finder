@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   const { mode, content, idea, tone, platform } = req.body;
 
-  try {const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+  try {const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
     ;
     let prompt = '';
 
