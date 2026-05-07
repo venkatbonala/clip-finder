@@ -1,7 +1,14 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const apiKey = process.env.GEMINI_API_KEY;
 
+console.log('=== DEBUG INFO ===');
+console.log('API Key exists:', !!apiKey);
+console.log('API Key length:', apiKey?.length);
+console.log('API Key starts with:', apiKey?.substring(0, 8) + '...');
+console.log('=== END DEBUG ===');
+
+const genAI = new GoogleGenerativeAI(apiKey);
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
